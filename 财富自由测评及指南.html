@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>财富自由之旅 - 财务健康评估</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 60%;
+            margin: 20px auto;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #report {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 60%;
+            margin: 20px auto;
+            display: none;
+        }
+
+        canvas {
+            margin-top: 20px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <h1>财富自由之旅 - 财务健康评估</h1>
+    <form id="financeForm">
+        <h2>1. 收入信息</h2>
+        <label for="salary">工资收入：</label>
+        <input type="number" id="salary" placeholder="请输入工资收入">
+        <label for="sideIncome">副业收入：</label>
+        <input type="number" id="sideIncome" placeholder="请输入副业收入">
+        <label for="investmentIncome">投资收益：</label>
+        <input type="number" id="investmentIncome" placeholder="请输入投资收益">
+
+        <h2>2. 支出信息</h2>
+        <label for="fixedExpenses">固定支出（房租/房贷）：</label>
+        <input type="number" id="fixedExpenses" placeholder="请输入固定支出">
+        <label for="variableExpenses">变动支出（餐饮/娱乐）：</label>
+        <input type="number" id="variableExpenses" placeholder="请输入变动支出">
+
+        <h2>3. 资产信息</h2>
+        <label for="cash">现金/存款：</label>
+        <input type="number" id="cash" placeholder="请输入现金/存款">
+        <label for="funds">基金/股票：</label>
+        <input type="number" id="funds" placeholder="请输入基金/股票价值">
+        <label for="property">房产/固定资产：</label>
+        <input type="number" id="property" placeholder="请输入房产/固定资产价值">
+
+        <h2>4. 负债信息</h2>
+        <label for="creditCardDebt">信用卡欠款：</label>
+        <input type="number" id="creditCardDebt" placeholder="请输入信用卡欠款">
+        <label for="loan">贷款（房贷/车贷）：</label>
+        <input type="number" id="loan" placeholder="请输入贷款金额">
+
+        <h2>5. 密码验证</h2>
+        <label for="password">请输入密码：</label>
+        <input type="password" id="password" placeholder="请输入密码">
+        <button type="button" onclick="generateReport()">生成报告</button>
+    </form>
+    <div id="report">
+        <h2>个人财务状况报告</h2>
+        <p>每月现金流结余：<span id="cashFlow"></span></p>
+        <p>债务占比：<span id="debtRatio"></span></p>
+        <p>可投资资产规模：<span id="investableAssets"></span></p>
+        <p>课程建议：<span id="courseSuggestion"></span></p>
+        <p>建议理由：<span id="suggestionReason"></span></p>
+        <canvas id="barChart"></canvas>
+        <canvas id="pieChart"></canvas>
+    </div>
+
+    <script>
+        function generateReport() {
+            const password = document.getElementById('password').value;
+            if (password!== 'shangheqiang') {
+                alert('密码错误，请重新输入！');
+                return;
+            }
+
+            const salary = parseFloat(document.getElementById('salary').value) || 0;
+            const sideIncome = parseFloat(document.getElementById('sideIncome').value) || 0;
+            const investmentIncome = parseFloat(document.getElementById('investmentIncome').value) || 0;
+            const fixedExpenses = parseFloat(document.getElementById('fixedExpenses').value) || 0;
+            const variableExpenses = parseFloat(document.getElementById('variableExpenses').value) || 0;
+            const cash = parseFloat(document.getElementById('cash').value) || 0;
+            const funds = parseFloat(document.getElementById('funds').value) || 0;
+            const property = parseFloat(document.getElementById('property').value) || 0;
+            const creditCardDebt = parseFloat(document.getElementById('creditCardDebt').value) || 0;
+            const loan = parseFloat(document.getElementById('loan').value) || 0;
+
+            const totalIncome = salary + sideIncome + investmentIncome;
+            const totalExpenses = fixedExpenses + variableExpenses;
+            const cashFlow = totalIncome - totalExpenses;
+            const totalAssets = cash + funds + property;
+            const totalDebt = creditCardDebt + loan;
+            const debtRatio = (totalDebt / totalAssets) * 100;
+            const investableAssets = totalAssets - totalDebt;
+
+            document.getElementById('cashFlow').textContent = cashFlow.toFixed(2);
+            document.getElementById('debtRatio').textContent = debtRatio.toFixed(2) + '%';
+            document.getElementById('investableAssets').textContent = investableAssets.toFixed(2);
+
+            let courseSuggestion = '';
+            let suggestionReason = '';
+            if (debtRatio > 50) {
+                courseSuggestion = '债务管理课程';
+                suggestionReason = '你的债务占比过高，需要学习有效的债务管理方法来降低债务风险。';
+            } else if (cashFlow < 0) {
+                courseSuggestion = '收支平衡课程';
+                suggestionReason = '你的每月现金流为负，需要学习如何合理规划收支，实现收支平衡。';
+            } else if (investableAssets > 0) {
+                courseSuggestion = '投资理财课程';
+                suggestionReason = '你有一定的可投资资产，学习投资理财知识可以帮助你实现资产的增值。';
+            } else {
+                courseSuggestion = '基础财务知识课程';
+                suggestionReason = '你可能需要先学习一些基础的财务知识，为后续的财务规划打下基础。';
+            }
+
+            document.getElementById('courseSuggestion').textContent = courseSuggestion;
+            document.getElementById('suggestionReason').textContent = suggestionReason;
+
+            const barChartCtx = document.getElementById('barChart').getContext('2d');
+            new Chart(barChartCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['收入', '支出', '现金流结余'],
+                    datasets: [{
+                        label: '金额',
+                        data: [totalIncome, totalExpenses, cashFlow],
+                        backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)'],
+                        borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            const pieChartCtx = document.getElementById('pieChart').getContext('2d');
+            new Chart(pieChartCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['资产', '负债'],
+                    datasets: [{
+                        data: [totalAssets, totalDebt],
+                        backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)'],
+                        borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],
+                        borderWidth: 1
+                    }]
+                }
+            });
+
+            document.getElementById('report').style.display = 'block';
+        }
+    </script>
+</body>
+
+</html>    
